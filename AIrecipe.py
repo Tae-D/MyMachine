@@ -98,6 +98,6 @@ if __name__ == '__main__':
     url="https://demo.cocktailpi.org/api/recipe/?page=1&inCategory=1"
     headersrecipe={"Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzY2NDA3Mjc2LCJleHAiOjE3NjY0OTM2NzYsInJlbWVtYmVyIjpmYWxzZX0.ltFexg4xpnWV1nuik7ZKw9-oYAozzzf0YJlXxDgzooCnv4bvu_U6unKEFDf8Txz9yOcrMAqfRM6cdzTN8mBnbA"}
 
-    promptmain="I am sad"
+    promptmain=("mám špatnou náladu, co si mám dát?")
 
     main(promptmain,url,headersrecipe)
