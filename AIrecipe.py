@@ -10,7 +10,7 @@ API_KEY = "WqioktBxymwd88nxXpuvAQ"
 
 def get_job_id(prompt:str):
     urlai=f"{BASEURL}/generate/text/async"
-    payload = {"n":1,"max_length": 10000,"prompt":prompt}
+    payload = {"n":1,"max_length": 10000,"prompt":prompt}#TODO: Make AI answer longer
     headers ={}
     if API_KEY:
         headers["apikey"] = API_KEY
@@ -43,7 +43,10 @@ def get_answer(job):
             return False
 
 def main(prompt:str, urlrecipe:str, headersrecipefunc):
+
     attempt_generate=0
+    start_time = time.time()
+
     recipeconnectioncode=requests.get(urlrecipe, headers=headersrecipefunc)
     if recipeconnectioncode.status_code ==200:
         recipes=recipeconnectioncode.json()
@@ -63,7 +66,7 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
             "Example Output: {\"reply\": \"Rockshandy\", \"suggestedRecipeId\": 251, \"reasoningSummary\": \"User needs something against thirst.\", \"humanResponse\": \"Tady je tvoje Rockshandy, obsahuje citrónovou sodu, která je výborná proti žízni\"}"
         )
 
-        finalprompt = f"{system_instruction}\n\n{example}\n\nInput: {prompt}\nOutput:"
+        finalprompt = f"{system_instruction}\n\n{example}\n\nInput: {prompt}\nOutput:" #Horrible prompt building
         job_id=get_job_id(finalprompt)
         absoluteresponse=get_answer(job_id)
         if absoluteresponse==False:
@@ -84,6 +87,8 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
         if res.get("reply") in recipes_list:
             print(res)
             print(res.get("reply"))
+            end_time=time.time()
+            print(f"Time taken: {round(end_time-start_time)}s")
             return res
         else:
             attempt_generate+=1
@@ -91,13 +96,13 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
                 print("too many attempts, try diferent prompt")
                 exit()
             else:
-                print(f"drink is not detected TEXT: {absoluteresponse}")
+                print(f"drink is not detected TEXT: {absoluteresponse}")#sometimes it just spams random things in there
                 continue
 
 if __name__ == '__main__':
     url="https://demo.cocktailpi.org/api/recipe/?page=1&inCategory=1"
     headersrecipe={"Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzY2NDA3Mjc2LCJleHAiOjE3NjY0OTM2NzYsInJlbWVtYmVyIjpmYWxzZX0.ltFexg4xpnWV1nuik7ZKw9-oYAozzzf0YJlXxDgzooCnv4bvu_U6unKEFDf8Txz9yOcrMAqfRM6cdzTN8mBnbA"}
 
-    promptmain=("mám špatnou náladu, co si mám dát?")
+    promptmain=("Dostal jsem špatnou známku z testu")
 
     main(promptmain,url,headersrecipe)
