@@ -10,7 +10,7 @@ API_KEY = "WqioktBxymwd88nxXpuvAQ"
 
 def get_job_id(prompt:str):
     urlai=f"{BASEURL}/generate/text/async"
-    payload = {"n":1,"max_length": 10000,"prompt":prompt}#TODO: Make AI answer longer
+    payload = {"n":1,"max_length": 10000,"prompt":prompt}#todo: Make AI answer longer
     headers ={}
     if API_KEY:
         headers["apikey"] = API_KEY
