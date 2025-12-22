@@ -10,7 +10,7 @@ API_KEY = "WqioktBxymwd88nxXpuvAQ"
 
 def get_job_id(prompt:str):
     urlai=f"{BASEURL}/generate/text/async"
-    payload = {"n":1,"max_length": 10000,"prompt":prompt}#todo: Make AI answer longer
+    payload = {"n":1,"params":{"max_length": 300},"prompt":prompt}
     headers ={}
     if API_KEY:
         headers["apikey"] = API_KEY
@@ -19,7 +19,6 @@ def get_job_id(prompt:str):
     if response.status_code!=200 and response.status_code!=202:
         print(f"error code: {response.status_code}, error message: {response.text}")
         exit(response.status_code)
-    print(response.json())
     job_id=response.json().get("id")
     return job_id
 
@@ -55,6 +54,7 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
         exit(2)
 
     while True:
+        print(f"\n{prompt}\n")
         system_instruction = (
             f"You are a drink machine API. Respond ONLY in valid dictionary. Take one drink from {recipes}. "
             "The dictionary must contain four keys: 'reply', 'suggestedRecipeId',  'reasoningSummary', 'humanResponse'."
@@ -103,6 +103,6 @@ if __name__ == '__main__':
     url="https://demo.cocktailpi.org/api/recipe/?page=1&inCategory=1"
     headersrecipe={"Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzY2NDA3Mjc2LCJleHAiOjE3NjY0OTM2NzYsInJlbWVtYmVyIjpmYWxzZX0.ltFexg4xpnWV1nuik7ZKw9-oYAozzzf0YJlXxDgzooCnv4bvu_U6unKEFDf8Txz9yOcrMAqfRM6cdzTN8mBnbA"}
 
-    promptmain=("Dostal jsem špatnou známku z testu")
+    promptmain=("")
 
     main(promptmain,url,headersrecipe)
