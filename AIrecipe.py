@@ -12,7 +12,7 @@ headersrecipe = {
 
 def get_job_id(prompt:str):
     url=f"{BASEURL}/generate/text/async"
-    payload = {"n":1,"max_length": 700,"prompt":prompt}
+    payload = {"n":1,"max_length": 10000,"prompt":prompt}
     headers ={}
     if API_KEY:
         headers["apikey"] = API_KEY
@@ -43,6 +43,7 @@ def get_answer(job):
             return False
 
 def main(prompt:str):
+    attempt_generate=0
     while True:
         recipeconnectioncode=requests.get("https://demo.cocktailpi.org/api/recipe/?page=1&inCategory=1",headers=headersrecipe)
         if recipeconnectioncode.status_code ==200:
@@ -53,26 +54,40 @@ def main(prompt:str):
 
         system_instruction = (
             f"You are a drink machine API. Respond ONLY in valid dictionary. Take one drink from {recipes}. "
-            "The JSON must contain three keys: 'reply', 'suggestedRecipeId', and 'reasoningSummary'."
+            "The JSON must contain three keys: 'reply', 'suggestedrecipeId',  'reasoningSummary', 'replytouser'."
         )
         example = (
             "Example Input: 'I am thirsty'\n"
-            "Example Output: {\"reply\": \"Rockshandy\", \"suggestedRecipeId\": 251, \"reasoningSummary\": \"User needs something against thirst.\"}"
+            "Example Output: {\"reply\": \"Rockshandy\", \"suggestedrecipeId\": 251, \"reasoningSummary\": \"User needs something against thirst.\", \"replytouser\": Write a text in czech to user about their drink}"
         )
 
         finalprompt = f"{system_instruction}\n\n{example}\n\nInput: {prompt}\nOutput:"
         job_id=get_job_id(finalprompt)
         absoluteresponse=get_answer(job_id)
         if absoluteresponse==False:
-            pass
+            print("too many attempts")
+            continue
         start=absoluteresponse.find("{")
         end=absoluteresponse.find("}")
+        print(absoluteresponse)
         if start==-1 or end==-1:
-            pass
+            print("bad json response")
+            continue
         else:
             res = json.loads(absoluteresponse[start:end+1])
             print(res)
-            return(res)
+            recipes_list=[recipes["content"][i]["name"] for i in range(len(recipes["content"]))]
+            if res.get("reply") in recipes_list:
+                print(res.get("reply"))
+                return(res)
+            else:
+                attempt_generate+=1
+                if attempt_generate>3:
+                    print("too many attempts, try diferent prompt")
+                    exit()
+                else:
+                    print("drink is not detected")
+                    continue
 
 if __name__ == '__main__':
-    main("Dej mi něco bez cukru")
+    main("chci něco tropického")
