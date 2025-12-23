@@ -94,8 +94,8 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
             attempt_generate+=1
             if attempt_generate>3:
                 print("too many attempts, try diferent prompt")
-                print(f"Time taken: {round(end_time-start_time)}s")
                 end_time=time.time()
+                print(f"Time taken: {round(end_time-start_time)}s")
                 exit()
             else:
                 print(f"drink is not detected TEXT: {absoluteresponse}")#sometimes it just spams random things in there
@@ -103,8 +103,9 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
 
 if __name__ == '__main__':
     url="https://demo.cocktailpi.org/api/recipe/?page=1&inCategory=1"
-    headersrecipe={"Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzY2NDA3Mjc2LCJleHAiOjE3NjY0OTM2NzYsInJlbWVtYmVyIjpmYWxzZX0.ltFexg4xpnWV1nuik7ZKw9-oYAozzzf0YJlXxDgzooCnv4bvu_U6unKEFDf8Txz9yOcrMAqfRM6cdzTN8mBnbA"}
+    authurl="https://demo.cocktailpi.org/api/auth/login"
+    token=(requests.post(authurl,json={"username":"Admin","password":"123456","remember":"true"}))
+    headersrecipe={"Authorization": f"Bearer {token.json()["accessToken"]}"}
 
-    promptmain=("já chci Virgin Piña Colada. já mám alergii na kokos")
-
+    promptmain=("ahoj")
     main(promptmain,url,headersrecipe)
