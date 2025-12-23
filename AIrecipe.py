@@ -107,5 +107,5 @@ if __name__ == '__main__':
     token=(requests.post(authurl,json={"username":"Admin","password":"123456","remember":"true"}))
     headersrecipe={"Authorization": f"Bearer {token.json()["accessToken"]}"}
 
-    promptmain=("ahoj")
+    promptmain=("chci něco exotického")
     main(promptmain,url,headersrecipe)
