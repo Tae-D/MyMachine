@@ -35,9 +35,10 @@ def get_answer(job):
             return absoluteresponse
         time.sleep(2)
         attempt+=1
-        print(r.json().get("wait_time"),r.json().get("is_possible"))
+        wait=r.json().get("wait_time")
+        print(wait)
 
-        if attempt>30:
+        if attempt>30 or wait>50:
             print("too many attempts")
             return False
 
@@ -52,7 +53,6 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
     else:
         print(f"Couldn't connect to recipe database, try again later. Error code: {recipeconnectioncode.status_code}")
         exit(2)
-
     while True:
         print(f"\n{prompt}\n")
         system_instruction = (
@@ -70,7 +70,6 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
         job_id=get_job_id(finalprompt)
         absoluteresponse=get_answer(job_id)
         if absoluteresponse==False:
-            print("too many attempts")
             continue
         start=absoluteresponse.find("{")
         end=absoluteresponse.find("}")
@@ -78,6 +77,7 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
         if start==-1 or end==-1:
             attempt_generate+=1
             print(f"bad json response TEXT: {absoluteresponse}")
+            attempt_generate+=1
             continue
         try:
             res = json.loads(absoluteresponse[start:end+1])
@@ -107,5 +107,5 @@ if __name__ == '__main__':
     token=(requests.post(authurl,json={"username":"Admin","password":"123456","remember":"true"}))
     headersrecipe={"Authorization": f"Bearer {token.json()["accessToken"]}"}
 
-    promptmain=("chci něco exotického")
+    promptmain=("chci něco kyselejšího")
     main(promptmain,url,headersrecipe)
