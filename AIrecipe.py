@@ -35,10 +35,8 @@ def get_answer(job):
             return absoluteresponse
         time.sleep(2)
         attempt+=1
-        print(r.json().get("wait_time"),r.json().get("is_possible"))
-
-        if attempt>30:
-            print("too many attempts")
+        print(r.json().get("wait_time"))
+        if attempt>30 or r.json().get("wait_time")>70:
             return False
 
 def main(prompt:str, urlrecipe:str, headersrecipefunc):
@@ -52,9 +50,9 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
     else:
         print(f"Couldn't connect to recipe database, try again later. Error code: {recipeconnectioncode.status_code}")
         exit(2)
-
+    print(f"\n{prompt}\n")
     while True:
-        print(f"\n{prompt}\n")
+
         system_instruction = (
             f"You are a drink machine API. Respond ONLY in valid dictionary. Take one drink from {recipes}. "
             "The dictionary must contain four keys: 'reply', 'suggestedRecipeId',  'reasoningSummary', 'humanResponse'."
@@ -70,19 +68,16 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
         job_id=get_job_id(finalprompt)
         absoluteresponse=get_answer(job_id)
         if absoluteresponse==False:
-            print("too many attempts")
             continue
         start=absoluteresponse.find("{")
         end=absoluteresponse.find("}")
 
         if start==-1 or end==-1:
             attempt_generate+=1
-            print(f"bad json response TEXT: {absoluteresponse}")
             continue
         try:
             res = json.loads(absoluteresponse[start:end+1])
         except json.JSONDecodeError:
-            print(f"AI sent broken JSON TEXT: {absoluteresponse}")
             continue
         recipes_list=[recipes["content"][i]["name"] for i in range(len(recipes["content"]))]
         if res.get("reply") in recipes_list:
@@ -92,13 +87,12 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
             return res
         else:
             attempt_generate+=1
-            if attempt_generate>3:
-                print("too many attempts, try diferent prompt")
+            if attempt_generate>5:#if prompt is not that hard, it usually is enough.
+                print("too many attempts, try different prompt")
                 end_time=time.time()
                 print(f"Time taken: {round(end_time-start_time)}s")
                 exit()
             else:
-                print(f"drink is not detected TEXT: {absoluteresponse}")#sometimes it just spams random things in there
                 continue
 
 if __name__ == '__main__':
@@ -107,5 +101,5 @@ if __name__ == '__main__':
     token=(requests.post(authurl,json={"username":"Admin","password":"123456","remember":"true"}))
     headersrecipe={"Authorization": f"Bearer {token.json()["accessToken"]}"}
 
-    promptmain=("chci něco exotického")
+    promptmain=("Měl jsem těžkou písemku")
     main(promptmain,url,headersrecipe)
