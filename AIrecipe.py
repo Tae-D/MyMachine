@@ -87,7 +87,7 @@ def main(prompt:str, urlrecipe:str, headersrecipefunc):
             return res
         else:
             attempt_generate+=1
-            if attempt_generate>5:#if prompt is not that hard, it usually is enough.
+            if attempt_generate>5:#if prompt is not that hard, it is usually enough.
                 print("too many attempts, try different prompt")
                 end_time=time.time()
                 print(f"Time taken: {round(end_time-start_time)}s")
