@@ -101,8 +101,16 @@ def main(prompt: str, urlrecipe: str, headersrecipefunc):
 
 
 if __name__ == '__main__':
-    url = "https://demo.cocktailpi.org/api/recipe/?page=1&inCategory=1"
-    authurl = "https://demo.cocktailpi.org/api/auth/login"
+    domain = ""
+
+    match "local":
+        case "local":
+            domain = "http://localhost:8080"
+        case "demo":
+            domain = "https://demo.cocktailpi.org"
+
+    url = f"{domain}/api/recipe/?page=1&inCategory=1"
+    authurl = f"{domain}/api/auth/login"
     token = (requests.post(authurl, json={
              "username": "Admin", "password": "123456", "remember": "true"}))
     headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
