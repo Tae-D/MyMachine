@@ -1,10 +1,13 @@
 import requests
 import time
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASEURL = "https://aihorde.net/api/v2"
-API_KEY = "WqioktBxymwd88nxXpuvAQ"
-
+API_KEY = api_key = os.getenv('API_KEY')
 
 def get_job_id(prompt: str):
     urlai = f"{BASEURL}/generate/text/async"
@@ -66,7 +69,6 @@ def main(prompt: str, urlrecipe: str, headersrecipefunc):
             "Example Output: {\"reply\": \"Rockshandy\", \"suggestedRecipeId\": 251, \"reasoningSummary\": \"User needs something against thirst.\", \"humanResponse\": \"Tady je tvoje Rockshandy, obsahuje citrónovou sodu, která je výborná proti žízni\"}"
         )
 
-        # Horrible prompt building
         finalprompt = f"{system_instruction}\n\n{example}\n\nInput: {prompt}\nOutput:"
         job_id = get_job_id(finalprompt)
         absoluteresponse = get_answer(job_id)
@@ -82,8 +84,7 @@ def main(prompt: str, urlrecipe: str, headersrecipefunc):
             res = json.loads(absoluteresponse[start:end+1])
         except json.JSONDecodeError:
             continue
-        recipes_list = [recipes["content"][i]["name"]
-                        for i in range(len(recipes["content"]))]
+        recipes_list = [recipes["content"][i]["name"] for i in range(len(recipes["content"]))]
         if res.get("reply") in recipes_list:
             print(res)
             end_time = time.time()
@@ -103,17 +104,18 @@ def main(prompt: str, urlrecipe: str, headersrecipefunc):
 if __name__ == '__main__':
     domain = ""
 
-    match "local":
+    match "demo":
         case "local":
             domain = "http://localhost:8080"
         case "demo":
             domain = "https://demo.cocktailpi.org"
 
+    print(domain)
     url = f"{domain}/api/recipe/?page=1&inCategory=1"
     authurl = f"{domain}/api/auth/login"
     token = (requests.post(authurl, json={
              "username": "Admin", "password": "123456", "remember": "true"}))
     headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
 
-    promptmain = ("Měl jsem těžkou písemku")
+    promptmain = ("Dej mi něco proti žízni")
     main(promptmain, url, headersrecipe)
