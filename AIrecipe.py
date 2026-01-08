@@ -44,22 +44,35 @@ def get_answer(job):
 
 
 def main(prompt: str, urlrecipe: str, headersrecipefunc):
-
+    recipes_list=[]
+    recipes_sorted=[]
     attempt_generate = 0
     start_time = time.time()
 
     recipeconnectioncode = requests.get(urlrecipe, headers=headersrecipefunc)
     if recipeconnectioncode.status_code == 200:
         recipes = recipeconnectioncode.json()
+        for i in range(recipes.get("totalPages")): #super messy, but I cant find better way to get all recipes at once.
+            pageurl=f"{urlrecipe}?page={i}&inCategory=1"  #works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
+            pagerecipes = requests.get(pageurl, headers=headersrecipefunc)
+            pagerecipes=pagerecipes.json()
+            recipes_list.extend([item["name"] for item in pagerecipes.get("content", [])])
+            recipes_sorted.extend(pagerecipes.get("content", []))
+
     else:
         print(
             f"Couldn't connect to recipe database, try again later. Error code: {recipeconnectioncode.status_code}")
         exit(2)
     print(f"\n{prompt}\n")
     while True:
+        if attempt_generate > 10:  # if prompt is not that hard, it is usually enough.
+            print("too many attempts, try different prompt")
+            end_time = time.time()
+            print(f"Time taken: {round(end_time - start_time)}s")
+            exit()
 
         system_instruction = (
-            f"You are a drink machine API. Respond ONLY in valid dictionary. Take one drink from {recipes}. "
+            f"You are a drink machine API. Respond ONLY in valid dictionary. Take one drink from {recipes_sorted}. "
             "The dictionary must contain four keys: 'reply', 'suggestedRecipeId',  'reasoningSummary', 'humanResponse'."
             "humanResponse should be a comment in Czech for drink, that is chosen"
 
@@ -79,12 +92,15 @@ def main(prompt: str, urlrecipe: str, headersrecipefunc):
 
         if start == -1 or end == -1:
             attempt_generate += 1
+            print(f"restart {attempt_generate}")
             continue
         try:
             res = json.loads(absoluteresponse[start:end+1])
         except json.JSONDecodeError:
+            attempt_generate += 1
+            print(f"restart {attempt_generate}")
             continue
-        recipes_list = [recipes["content"][i]["name"] for i in range(len(recipes["content"]))]
+
         if res.get("reply") in recipes_list:
             print(res)
             end_time = time.time()
@@ -92,30 +108,24 @@ def main(prompt: str, urlrecipe: str, headersrecipefunc):
             return res
         else:
             attempt_generate += 1
-            if attempt_generate > 5:  # if prompt is not that hard, it is usually enough.
-                print("too many attempts, try different prompt")
-                end_time = time.time()
-                print(f"Time taken: {round(end_time-start_time)}s")
-                exit()
-            else:
-                continue
+            print(f"restart {attempt_generate}")
+            continue
 
 
 if __name__ == '__main__':
     domain = ""
 
-    match "demo":
+    match "local":
         case "local":
             domain = "http://localhost:8080"
         case "demo":
             domain = "https://demo.cocktailpi.org"
 
     print(domain)
-    url = f"{domain}/api/recipe/?page=1&inCategory=1"
+    url = f"{domain}/api/recipe/"
     authurl = f"{domain}/api/auth/login"
-    token = (requests.post(authurl, json={
-             "username": "Admin", "password": "123456", "remember": "true"}))
+    token = (requests.post(authurl, json={"username": "Admin", "password": "123456", "remember": "true"}))
     headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
 
-    promptmain = ("Dej mi něco proti žízni")
+    promptmain = ("Chci nějaký barevný a přívětivý cocktail")
     main(promptmain, url, headersrecipe)
