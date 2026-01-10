@@ -1,0 +1,3 @@
+[submodule "CocktailPi"]
+	path = CocktailPi
+	url = https://github.com/Tae-D/CocktailPi.git
