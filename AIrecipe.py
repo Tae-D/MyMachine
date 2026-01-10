@@ -43,25 +43,29 @@ def get_answer(job):
             return False
 
 
-def main(prompt: str, urlrecipe: str, headersrecipefunc):
+def main(prompt: str, urlrecipe: str, username: str, password: str):
+    start_time = time.time()
+    authurl = f"{urlrecipe}/api/auth/login"
+    token = (requests.post(authurl, json={"username": username, "password": password, "remember": "false"}))
+    headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
+
     recipes_list=[]
     recipes_sorted=[]
     attempt_generate = 0
-    start_time = time.time()
-
-    recipeconnectioncode = requests.get(urlrecipe, headers=headersrecipefunc)
-    if recipeconnectioncode.status_code == 200:
-        recipes = recipeconnectioncode.json()
+    recipes = requests.get(f"{urlrecipe}/api/recipe/", headers=headersrecipe)
+    if recipes.status_code == 200:
+        recipes = recipes.json()
         for i in range(recipes.get("totalPages")): #super messy, but I cant find better way to get all recipes at once.
-            pageurl=f"{urlrecipe}?page={i}&inCategory=1"  #works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
-            pagerecipes = requests.get(pageurl, headers=headersrecipefunc)
+            pageurl=f"{urlrecipe}/api/recipe/?page={i}&inCategory=1"  #works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
+            pagerecipes = requests.get(pageurl, headers=headersrecipe)
             pagerecipes=pagerecipes.json()
             recipes_list.extend([item["name"] for item in pagerecipes.get("content", [])])
             recipes_sorted.extend(pagerecipes.get("content", []))
+        print(recipes_list)
 
     else:
         print(
-            f"Couldn't connect to recipe database, try again later. Error code: {recipeconnectioncode.status_code}")
+            f"Couldn't connect to recipe database, try again later. Error code: {recipes.status_code}")
         exit(2)
     print(f"\n{prompt}\n")
     while True:
@@ -115,17 +119,15 @@ def main(prompt: str, urlrecipe: str, headersrecipefunc):
 if __name__ == '__main__':
     domain = ""
 
-    match "local":
+    match "demo":
         case "local":
             domain = "http://localhost:8080"
         case "demo":
             domain = "https://demo.cocktailpi.org"
 
     print(domain)
-    url = f"{domain}/api/recipe/"
-    authurl = f"{domain}/api/auth/login"
-    token = (requests.post(authurl, json={"username": "Admin", "password": "123456", "remember": "true"}))
-    headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
+    username = "Admin"
+    password = "123456"
 
-    promptmain = ("Chci nějaký barevný a přívětivý cocktail")
-    main(promptmain, url, headersrecipe)
+    promptmain = ("Lemon Lime And Bitters")
+    main(promptmain, domain, username, password)
