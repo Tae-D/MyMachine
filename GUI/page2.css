@@ -39,26 +39,31 @@ footer{
     width: 5vh;
     height: 5vh;
     border: 5px solid white;
+    border-bottom-color: transparent;
     animation-name: loading-animation;
-    animation-duration: 3s;
+    animation-duration: 6s;
     animation-iteration-count: infinite;
     animation-direction: normal;
-    animation-timing-function: ease-in-out;
+    animation-timing-function: cubic-bezier(.44,.21,.62,.86);
     animation-delay: 0;
+    border-radius: 50%;
 }
 
 @keyframes loading-animation {
     0% {
         transform: rotate(0deg);
-        border-radius: 0%;
+    }
+    25% {
+        transform: rotate(450deg);
     }
     50% {
-        transform: rotate(360deg);
-        border-radius: 50%;
+        transform: rotate(900deg);
+    }
+    75% {
+        transform: rotate(1350deg);
     }
     100% {
-        transform: rotate(720deg);
-        border-radius: 0%;
+        transform: rotate(1800deg);
     }
 }
 
