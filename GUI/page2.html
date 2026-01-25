@@ -1,22 +1,26 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="cs">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Komunikace s AI</title>
-        <link rel="stylesheet" href="page2.css" />
-        <script defer src="form.js"></script>
-    </head>
-    <body>
-        <form id="promptform">
-            <input type="text" placeholder="Napiš zadání pro AI" id="prompt" required />
-            <button type="submit" >Odeslat</button>
-        </form>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Komunikace s AI</title>
+    <link rel="stylesheet" href="page2.css" />
+    <script defer src="form.js"></script>
+  </head>
+  <body>
+    <form id="promptform">
+      <fieldset>
+        <input
+          type="text"
+          placeholder="Napiš zadání pro AI"
+          id="prompt"
+          required
+        />
+        <button type="submit">Odeslat</button>
+      </fieldset>
+    </form>
 
-        <div class="loading"></div>
-        <div id="response">AI odpověď</div>
-        <footer>
-            Vyrobeno v rámci projektu MyMachine
-        </footer>
-    </body>
+    <div style="visibility: hidden" class="loading"></div>
+    <footer>Vyrobeno v rámci projektu MyMachine</footer>
+  </body>
 </html>
