@@ -60,7 +60,7 @@ def translate_en_to_cs(text):
 
 def get_job_id(prompt: str):
     urlai = f"{BASEURL}/generate/text/async"
-    payload = {"n": 1, "params": {"max_length": 300}, "prompt": prompt}
+    payload = {"n": 1, "params": {"max_length": 150}, "prompt": prompt}
     headers = {}
     if API_KEY:
         headers["apikey"] = API_KEY
@@ -88,7 +88,8 @@ def get_answer(job):
         time.sleep(2)
         attempt += 1
         print(r.json().get("wait_time"))
-        if attempt > 30 or r.json().get("wait_time") > 70:
+        if attempt > 30 or r.json().get("wait_time") > 40:
+
             return False
 
 
@@ -108,9 +109,10 @@ def main(prompt: str, urlrecipe: str, username: str, password: str):
             pageurl=f"{urlrecipe}/api/recipe/?page={i}&inCategory=1"  #works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
             pagerecipes = requests.get(pageurl, headers=headersrecipe)
             pagerecipes=pagerecipes.json()
-            recipes_list.extend([item["name"] for item in pagerecipes.get("content", [])])
-            recipes_sorted.extend(pagerecipes.get("content", []))
-        print(recipes_list)
+            recipes_list.extend([[item["name"],item["id"]] for item in pagerecipes.get("content")])
+            content=pagerecipes.get("content",[])
+            for drink in content:
+                recipes_sorted.append({"id":drink["id"],"name":drink["name"],"description":drink["description"],"ingredients":drink["ingredients"]})
 
     else:
         print(
@@ -127,19 +129,20 @@ def main(prompt: str, urlrecipe: str, username: str, password: str):
 
         system_instruction = (
             f"You are a drink machine API. Respond ONLY in valid dictionary. Take one drink from {recipes_sorted}. "
-            "The dictionary must contain four keys: 'reply', 'suggestedRecipeId',  'reasoningSummary', 'humanResponse'."
+            "The dictionary must contain four keys: 'reply', 'id', 'reasoningSummary', 'humanResponse'."
             "humanResponse should be a comment for drink, that is chosen"
 
         )
         example = (
             "Example Input: 'I am thirsty'\n"
-            "Example Output: {\"reply\": \"Rockshandy\", \"suggestedRecipeId\": 251, \"reasoningSummary\": \"User needs something against thirst.\", \"humanResponse\": \"Here is your Rockshandy, it contains lemon soda, that will be great against your thirst\"}"
+            "Example Output: {\"reply\": \"Rockshandy\", \"id\": 251, \"reasoningSummary\": \"User needs something against thirst. I will give them Rockshady because it contains Lemon-Lime Soda, which is great again thirst and it is refreshing\", \"humanResponse\": \"Here is your Rockshandy, it contains lemon soda, that will be great against your thirst\"}"
         )
 
         finalprompt = f"{system_instruction}\n\n{example}\n\nInput: {prompt}\nOutput:"
         job_id = get_job_id(finalprompt)
         absoluteresponse = get_answer(job_id)
         if absoluteresponse == False:
+            requests.delete(f"{BASEURL}/generate/text/status/{job_id}")
             continue
         start = absoluteresponse.find("{")
         end = absoluteresponse.find("}")
@@ -155,14 +158,17 @@ def main(prompt: str, urlrecipe: str, username: str, password: str):
             print(f"restart {attempt_generate}")
             continue
 
-        if res.get("reply") in recipes_list:
-            print(res)
+        if res.get("reply") in [i[0] for i in recipes_list]:
             end_time = time.time()
             print(f"Time taken: {round(end_time-start_time)}s")
+            for item, id in recipes_list:
+                if res.get("reply") == item:
+                    res["id"]=id
             return res
         else:
             attempt_generate += 1
             print(f"restart {attempt_generate}")
+            requests.delete(f"{BASEURL}/generate/text/status/{job_id}")
             continue
 
 
@@ -178,7 +184,7 @@ if __name__ == '__main__':
     print(domain)
     username = "Admin"
     password = "123456"
-    init_translation()
 
-    promptmain = ("chci něco osvěžujicího")
-    main(promptmain, domain, username, password)
+
+    promptmain = ("Chci šťavnatý drink s chutí slunce, pro zvýšení mé mozkové aktivity")
+    print(main(promptmain, domain, username, password))
