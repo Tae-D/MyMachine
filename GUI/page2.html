@@ -6,9 +6,10 @@
     <title>Komunikace s AI</title>
     <link rel="stylesheet" href="page2.css" />
     <script defer src="form.js"></script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
   </head>
   <body>
-    <form id="promptform">
+    <form id="promptform" action="#">
       <fieldset>
         <input
           type="text"
@@ -19,7 +20,7 @@
         <button type="submit">Odeslat</button>
       </fieldset>
     </form>
-
+    <div id="response"></div>
     <div style="visibility: hidden" class="loading"></div>
     <footer>Vyrobeno v rámci projektu MyMachine</footer>
   </body>
