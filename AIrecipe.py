@@ -3,11 +3,60 @@ import time
 import json
 import os
 from dotenv import load_dotenv
+import argostranslate.package
+import argostranslate.translate
 
 load_dotenv()
+FROM_CODE = "cs"
+TO_CODE = "en"
 
 BASEURL = "https://aihorde.net/api/v2"
 API_KEY = api_key = os.getenv('API_KEY')
+
+
+def init_translation():
+    """Initializes and installs translation models if they are missing."""
+    try:
+        # Update index to find available models
+        argostranslate.package.update_package_index()
+        available_packages = argostranslate.package.get_available_packages()
+
+        # Find the specific package for Czech -> English
+        package_to_install = next(
+            (pkg for pkg in available_packages if pkg.from_code == FROM_CODE and pkg.to_code == TO_CODE),
+            None
+        )
+
+        if not package_to_install:
+            print(f"Error: Model for {FROM_CODE} -> {TO_CODE} not found in index.")
+            return
+
+        # Check if already installed
+        installed_packages = argostranslate.package.get_installed_packages()
+        is_installed = any(
+            pkg.from_code == FROM_CODE and pkg.to_code == TO_CODE
+            for pkg in installed_packages
+        )
+
+        if not is_installed:
+            print(f"Downloading {FROM_CODE} to {TO_CODE} translation model...")
+            download_path = package_to_install.download()
+            argostranslate.package.install_from_path(download_path)
+            print("Installation complete.")
+        else:
+            print("Translation model is already installed.")
+
+    except Exception as e:
+        print(f"Failed to initialize translation: {e}")
+
+def translate_cs_to_en(text):
+    translatedText = argostranslate.translate.translate(text, FROM_CODE, TO_CODE)
+    return translatedText
+
+def translate_en_to_cs(text):
+    translatedText = argostranslate.translate.translate(text, TO_CODE,FROM_CODE)
+    return translatedText
+
 
 def get_job_id(prompt: str):
     urlai = f"{BASEURL}/generate/text/async"
@@ -67,6 +116,7 @@ def main(prompt: str, urlrecipe: str, username: str, password: str):
         print(
             f"Couldn't connect to recipe database, try again later. Error code: {recipes.status_code}")
         exit(2)
+    prompt=translate_cs_to_en(prompt)
     print(f"\n{prompt}\n")
     while True:
         if attempt_generate > 10:  # if prompt is not that hard, it is usually enough.
@@ -78,12 +128,12 @@ def main(prompt: str, urlrecipe: str, username: str, password: str):
         system_instruction = (
             f"You are a drink machine API. Respond ONLY in valid dictionary. Take one drink from {recipes_sorted}. "
             "The dictionary must contain four keys: 'reply', 'suggestedRecipeId',  'reasoningSummary', 'humanResponse'."
-            "humanResponse should be a comment in Czech for drink, that is chosen"
+            "humanResponse should be a comment for drink, that is chosen"
 
         )
         example = (
             "Example Input: 'I am thirsty'\n"
-            "Example Output: {\"reply\": \"Rockshandy\", \"suggestedRecipeId\": 251, \"reasoningSummary\": \"User needs something against thirst.\", \"humanResponse\": \"Tady je tvoje Rockshandy, obsahuje citrónovou sodu, která je výborná proti žízni\"}"
+            "Example Output: {\"reply\": \"Rockshandy\", \"suggestedRecipeId\": 251, \"reasoningSummary\": \"User needs something against thirst.\", \"humanResponse\": \"Here is your Rockshandy, it contains lemon soda, that will be great against your thirst\"}"
         )
 
         finalprompt = f"{system_instruction}\n\n{example}\n\nInput: {prompt}\nOutput:"
@@ -128,6 +178,7 @@ if __name__ == '__main__':
     print(domain)
     username = "Admin"
     password = "123456"
+    init_translation()
 
-    promptmain = ("Lemon Lime And Bitters")
+    promptmain = ("chci něco osvěžujicího")
     main(promptmain, domain, username, password)
