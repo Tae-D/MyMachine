@@ -86,7 +86,7 @@ def get_answer(job):
         time.sleep(2)
         attempt += 1
         print(r.json().get("wait_time"))
-        if attempt > 30 or r.json().get("wait_time") > 40:
+        if attempt > 30 and r.json().get("wait_time")==0 or r.json().get("wait_time") > 60:
 
             return False
 
@@ -107,12 +107,12 @@ def main(prompt: str, urlrecipe: str, username: str, password: str):
             pageurl=f"{urlrecipe}/api/recipe/?page={i}"  #works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
             pagerecipes = requests.get(pageurl, headers=headersrecipe)
             pagerecipes=pagerecipes.json()
-            print(f"stahování receptů {i+1}/{recipes.get("totalPages")}")
+            print(f"downloading recipes {i+1}/{recipes.get("totalPages")}")
             recipes_list.extend([[item["name"],item["id"]] for item in pagerecipes.get("content")])
             content=pagerecipes.get("content",[])
             for drink in content:
                 recipes_sorted.append({"name":drink["name"],"description":drink["description"],"ingredients":drink["ingredients"]})
-        print(f"stáhnuto {len(recipes_list)} receptů")
+        print(f"downloaded {len(recipes_list)} recipes")
     else:
         print(
             f"Couldn't connect to recipe database, try again later. Error code: {recipes.status_code}")
@@ -187,5 +187,5 @@ if __name__ == '__main__':
     password = "123456"
 
 
-    promptmain = ("Chci šťavnatý drink s chutí slunce, pro zvýšení mé mozkové aktivity")
+    promptmain = ("chci něco sladkého")
     print(main(promptmain, domain, username, password))
