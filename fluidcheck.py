@@ -58,7 +58,7 @@ def feasibility(recipeid):
         print(recipe.get("name"))
         for i in recipe["productionSteps"][0]["stepIngredients"]:
             if str(i["ingredient"]["id"]) not in fluid_dict:
-                print(f"\nunsynced ingredient {i['ingredient']['name']}")
+                print(f"\nunsynced ingredient {i['ingredient']['name']} id:{i['ingredient']['id']}")
                 print("to sync ngredients type sync() into terminal")
                 fs=False
         if not fs:
@@ -66,8 +66,7 @@ def feasibility(recipeid):
         for u in recipe["productionSteps"][0]["stepIngredients"]:
             print(f"{u['ingredient']['name']} {u["amount"]}ml/{fluid_dict[str(u["ingredient"]["id"])]}ml")
             if not fluid_dict[str(u["ingredient"]["id"])]-u["amount"]>0:
-                print(f"\nnot enogh {u['ingredient']['name']}")
-                print(f"required: {u["amount"]}ml/{fluid_dict[str(u["ingredient"]["id"])]}ml")
+                print(f"NOT enough {u['ingredient']['name']} id:{u['ingredient']['id']}, required: {u["amount"]}ml/{fluid_dict[str(u["ingredient"]["id"])]}ml")
                 fs=False
         if not fs:
             return False
@@ -75,6 +74,31 @@ def feasibility(recipeid):
             print(f"{recipe.get("name")} is feasible")
             return True
 
+def call(recipeid):
+    if feasibility(recipeid):
+        authurl = f"{domain}/api/auth/login"
+        token = (requests.post(authurl, json={"username": username, "password": password, "remember": "false"}))
+        if token.status_code != 200:
+            print("could not login")
+            exit(1)
+        headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
+        list = requests.put(f"{domain}/api/cocktail/{recipeid}", headers=headersrecipe, json={"amountOrderedInMl":300,"customisations":{"boost":100,"additionalIngredients":[]},"ingredientGroupReplacements":[]})
+        print(list)
+        print(requests.post(f"{domain}/api/cocktail/continueproduction", headers=headersrecipe))
+        headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
+        recipe = requests.get(f"{domain}/api/recipe/{recipeid}?isIngredient=false", headers=headersrecipe)
+        if recipe.status_code != 200:
+            print("could not get recipe")
+            return False
+        else:
+            fluid_dict = load_data("data.json")
+            recipe=recipe.json()
+            print("")
+            for u in recipe["productionSteps"][0]["stepIngredients"]:
+                print(f"{u['ingredient']['name']}-{fluid_dict[str(u["ingredient"]["id"])]-u["amount"]}ml")
+                fluid_dict[str(u["ingredient"]["id"])] -= u["amount"]
+                with open("data.json", "w") as f:
+                    json.dump(fluid_dict, f, indent=4)
 
 
 if __name__ == "__main__":
@@ -86,5 +110,6 @@ if __name__ == "__main__":
     print(domain)
     username = "Admin"
     password = "123456"
-    sync()
-    feasibility(10)
+    #sync()
+    call(300)
+    #feasibility(300)
