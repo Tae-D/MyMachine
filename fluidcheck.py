@@ -100,6 +100,15 @@ def call(recipeid):
                 with open("data.json", "w") as f:
                     json.dump(fluid_dict, f, indent=4)
 
+def refill(ingredientid, ml):
+    fluid_dict = load_data("data.json")
+    if ingredientid in fluid_dict:
+        fluid_dict[ingredientid] = ml
+        with open("data.json", "w") as f:
+            json.dump(fluid_dict, f, indent=4)
+        print(f"refilled id:{ingredientid} with {ml}ml")
+    else:
+        print(f"there is no ingredient with id:{ingredientid}")
 
 if __name__ == "__main__":
     match "local":
@@ -112,4 +121,5 @@ if __name__ == "__main__":
     password = "123456"
     #sync()
     call(300)
+    refill(0, 19)
     #feasibility(300)
