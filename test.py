@@ -15,7 +15,7 @@ for i in range(repeats):
     end = time.time()
     times.append(end-start)
     drinks.append(response["reply"])
-    print(f"{i}/{repeats}")
+    print(f"{i+1}/{repeats}")
     print(drinks)
     print(times)
     print(f"průměr: {sum(times) / len(times)}") #průměr: 51.149335992336276
