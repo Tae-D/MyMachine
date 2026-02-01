@@ -102,8 +102,8 @@ def call(recipeid):
 
 def refill(ingredientid, ml):
     fluid_dict = load_data("data.json")
-    if ingredientid in fluid_dict:
-        fluid_dict[ingredientid] = ml
+    if str(ingredientid) in fluid_dict:
+        fluid_dict[str(ingredientid)] = ml
         with open("data.json", "w") as f:
             json.dump(fluid_dict, f, indent=4)
         print(f"refilled id:{ingredientid} with {ml}ml")
@@ -120,6 +120,6 @@ if __name__ == "__main__":
     username = "Admin"
     password = "123456"
     #sync()
-    call(300)
-    refill(0, 19)
+    #call(300)
+    #refill(104, 10000000000000)
     #feasibility(300)
