@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 import argostranslate.package
 import argostranslate.translate
+from fluidcheck import *
 
 load_dotenv()
 FROM_CODE = "cs"
@@ -108,6 +109,7 @@ def main(prompt: str, urlrecipe: str, username: str, password: str):
             pagerecipes = requests.get(pageurl, headers=headersrecipe)
             pagerecipes=pagerecipes.json()
             print(f"downloading recipes {i+1}/{recipes.get("totalPages")}")
+
             recipes_list.extend([[item["name"],item["id"]] for item in pagerecipes.get("content")])
             content=pagerecipes.get("content",[])
             for drink in content:
@@ -138,6 +140,7 @@ def main(prompt: str, urlrecipe: str, username: str, password: str):
         )
 
         finalprompt = f"{system_instruction}\n\n{example}\n\nInput: {prompt}\nOutput:"
+        print(len(finalprompt))
         job_id = get_job_id(finalprompt)
         absoluteresponse = get_answer(job_id)
         if absoluteresponse == False:
@@ -187,5 +190,5 @@ if __name__ == '__main__':
     password = "123456"
 
 
-    promptmain = ("chci něco sladkého")
+    promptmain = ("chci něco na uklidnění pŕed testem")
     print(main(promptmain, domain, username, password))

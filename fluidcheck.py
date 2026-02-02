@@ -37,7 +37,7 @@ def sync():
         list=list.json()
         fluid={}
         for i in list:
-            fluid[i["currentIngredient"]["id"]]=i["fillingLevelInMl"]
+            fluid[i["currentIngredient"]["name"]]=i["fillingLevelInMl"]
         with open("data.json", "w") as f:
             json.dump(fluid, f, indent=4)
         return fluid
@@ -54,7 +54,6 @@ def feasibility(recipeid,ml):
         print("could not check feasibility")
         return False
     if recipe.json().get("feasible", False)==True:
-        print("feasible")
         return True
     else:
         print("not feasible")
@@ -88,6 +87,6 @@ if __name__ == "__main__":
     username = "Admin"
     password = "123456"
     #check()
-    #sync()
+    sync()
     call(167,50)
     #feasibility(167)
