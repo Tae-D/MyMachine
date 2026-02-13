@@ -3,7 +3,7 @@ import json
 
 username = "Admin"
 password = "123456"
-domain="https://demo.cocktailpi.org"
+domain="http://localhost:8080"
 
 
 def check():
@@ -42,7 +42,7 @@ def sync():
             json.dump(fluid, f, indent=4)
         return fluid
 
-def feasibility(recipeid,ml):
+def feasibility(recipeid: int,ml):
     authurl = f"{domain}/api/auth/login"
     token = requests.post(authurl, json={"username": username, "password": password, "remember": "false"})
     if token.status_code != 200:
@@ -53,13 +53,38 @@ def feasibility(recipeid,ml):
     if recipe.status_code != 200:
         print("could not check feasibility")
         return False
-    if recipe.json().get("feasible", False)==True:
+    if recipe.json().get("feasible", False):
         return True
     else:
-        print("not feasible")
-        for i in recipe.json().get("requiredIngredients", []):
-            print(f"{i["ingredient"]["name"]} {i["ingredient"]["id"]} needs {i["amountMissing"]}ml more out of {i["amountRequired"]}ml")
+        #print("not feasible")
+        #for i in recipe.json().get("requiredIngredients", []):
+        #    print(f"{i["ingredient"]["name"]} {i["ingredient"]["id"]} needs {i["amountMissing"]}ml")
         return False
+
+def feasibility_list(ml):
+    sync()
+    recipes_list=[]
+    authurl = f"{domain}/api/auth/login"
+    token = (requests.post(authurl, json={"username": username, "password": password, "remember": "false"}))
+    headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
+    recipes = requests.get(f"{domain}/api/recipe/", headers=headersrecipe)
+    if recipes.status_code == 200:
+        recipes = recipes.json()
+        for i in range(recipes.get("totalPages")): #super messy, but I cant find better way to get all recipes at once.
+            pageurl=f"{domain}/api/recipe/?page={i}&fabricable=auto"  #works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
+            pagerecipes = requests.get(pageurl, headers=headersrecipe)
+            pagerecipes=pagerecipes.json()
+            print(f"downloading recipes {i+1}/{recipes.get("totalPages")}")
+            content=pagerecipes.get("content",[])
+            for i in content:
+                if feasibility(i["id"],ml):
+                    recipes_list.append(i)
+        print(f"downloaded {len(recipes_list)} recipes")
+    else:
+        print(
+            f"Couldn't connect to recipe database, try again later. Error code: {recipes.status_code}")
+        exit(2)
+    return recipes_list
 
 
 def call(recipeid, ml):
@@ -87,6 +112,6 @@ if __name__ == "__main__":
     username = "Admin"
     password = "123456"
     #check()
-    sync()
-    call(167,50)
+    #call(167,500)
     #feasibility(167)
+    feasibility_list(10)

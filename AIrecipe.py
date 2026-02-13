@@ -92,33 +92,16 @@ def get_answer(job):
             return False
 
 
-def main(prompt: str, urlrecipe: str, username: str, password: str):
-    start_time = time.time()
-    authurl = f"{urlrecipe}/api/auth/login"
-    token = (requests.post(authurl, json={"username": username, "password": password, "remember": "false"}))
-    headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
-
-    recipes_list=[]
-    recipes_sorted=[]
+def main(prompt: str, ml: int):
     attempt_generate = 0
-    recipes = requests.get(f"{urlrecipe}/api/recipe/", headers=headersrecipe)
-    if recipes.status_code == 200:
-        recipes = recipes.json()
-        for i in range(recipes.get("totalPages")): #super messy, but I cant find better way to get all recipes at once.
-            pageurl=f"{urlrecipe}/api/recipe/?page={i}"  #works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
-            pagerecipes = requests.get(pageurl, headers=headersrecipe)
-            pagerecipes=pagerecipes.json()
-            print(f"downloading recipes {i+1}/{recipes.get("totalPages")}")
 
-            recipes_list.extend([[item["name"],item["id"]] for item in pagerecipes.get("content")])
-            content=pagerecipes.get("content",[])
-            for drink in content:
-                recipes_sorted.append({"name":drink["name"],"description":drink["description"],"ingredients":drink["ingredients"]})
-        print(f"downloaded {len(recipes_list)} recipes")
-    else:
-        print(
-            f"Couldn't connect to recipe database, try again later. Error code: {recipes.status_code}")
-        exit(2)
+    start_time = time.time()
+    recipes=feasibility_list(ml)
+    recipes_sorted = [[i["name"], i["description"], i["ingredients"]] for i in recipes]
+    recipes_list=[[i["name"], i["id"]] for i in recipes]
+    print(recipes_sorted)
+    print(recipes_list)
+
     prompt=translate_cs_to_en(prompt)
     print(f"\n{prompt}\n")
     while True:
@@ -189,6 +172,5 @@ if __name__ == '__main__':
     username = "Admin"
     password = "123456"
 
-
     promptmain = ("chci něco na uklidnění pŕed testem")
-    print(main(promptmain, domain, username, password))
+    print(main(promptmain, 50))
