@@ -27,12 +27,12 @@ def sync():
     token = (requests.post(authurl, json={"username": username, "password": password, "remember": "false"}))
     if token.status_code != 200:
         print("could not login")
-        exit(1)
+        return 0
     headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
     list=requests.get(f"{domain}/api/pump/",headers=headersrecipe)
     if list.status_code != 200:
         print("could not get ingredient list")
-        exit(1)
+        return 0
     else:
         list=list.json()
         fluid={}
@@ -83,7 +83,7 @@ def feasibility_list(ml):
     else:
         print(
             f"Couldn't connect to recipe database, try again later. Error code: {recipes.status_code}")
-        exit(2)
+        return []
     return recipes_list
 
 
@@ -93,13 +93,30 @@ def call(recipeid, ml):
         token = (requests.post(authurl, json={"username": username, "password": password, "remember": "false"}))
         if token.status_code != 200:
             print("could not login")
-            exit(1)
+            return 1
         headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
         list = requests.put(f"{domain}/api/cocktail/{recipeid}", headers=headersrecipe, json={"amountOrderedInMl":ml,"customisations":{"boost":100,"additionalIngredients":[]},"ingredientGroupReplacements":[]})
         print(list)
         print(requests.post(f"{domain}/api/cocktail/continueproduction", headers=headersrecipe))
         check()
         sync()
+        return 0
+
+def fill(pumpid, ml):
+    authurl = f"{domain}/api/auth/login"
+    token = (requests.post(authurl, json={"username": username, "password": password, "remember": "false"}))
+    if token.status_code != 200:
+        print("could not login")
+        return 1
+    headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
+    code=requests.patch(f"{domain}/api/pump/{pumpid}", headers=headersrecipe, json={"pin":None,"fillingLevelInMl":ml,"enablePin":None,"stepPin":None,"type":"dc"})
+    print(code.status_code)
+    if code.status_code != 200:
+        print("could not fill")
+        return 1
+    else:
+        print(f"filled pump {pumpid} to {ml}")
+        return 0
 
 
 if __name__ == "__main__":
@@ -114,4 +131,5 @@ if __name__ == "__main__":
     #check()
     #call(167,500)
     #feasibility(167)
-    feasibility_list(10)
+    #feasibility_list(10)
+    fill(1,420)
