@@ -97,11 +97,8 @@ def main(prompt: str, ml: int):
 
     start_time = time.time()
     recipes=feasibility_list(ml)
-    recipes_sorted = [[i["name"], i["description"], i["ingredients"]] for i in recipes]
+    recipes_sorted = [[i["name"], i["description"], [g["name"] for g in i["ingredients"]]] for i in recipes]
     recipes_list=[[i["name"], i["id"]] for i in recipes]
-    print(recipes_sorted)
-    print(recipes_list)
-
     prompt=translate_cs_to_en(prompt)
     print(f"\n{prompt}\n")
     while True:
@@ -172,5 +169,5 @@ if __name__ == '__main__':
     username = "Admin"
     password = "123456"
 
-    promptmain = ("chci něco na uklidnění pŕed testem")
+    promptmain = ("chci něco s mátou")
     print(main(promptmain, 50))

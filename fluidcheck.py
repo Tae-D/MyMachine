@@ -70,7 +70,7 @@ def feasibility_list(ml):
     recipes = requests.get(f"{domain}/api/recipe/", headers=headersrecipe)
     if recipes.status_code == 200:
         recipes = recipes.json()
-        for i in range(recipes.get("totalPages")): #super messy, but I cant find better way to get all recipes at once.
+        for i in range(recipes.get("totalPages")):
             pageurl=f"{domain}/api/recipe/?page={i}&fabricable=auto"  #works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
             pagerecipes = requests.get(pageurl, headers=headersrecipe)
             pagerecipes=pagerecipes.json()
