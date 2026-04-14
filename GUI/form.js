@@ -17,4 +17,27 @@ socket.on("response", (msg) => {
     "Odpověď: " + data.humanResponse + "<br>" + "Nápoj : " + data.reply;
   document.querySelector("fieldset").disabled = false;
   document.querySelector(".loading").style.visibility = "hidden";
+  document.querySelector("#prompt").value = "";
 });
+
+
+
+let timeout;
+
+function resetTimer() {
+    clearTimeout(timeout);
+    
+    timeout = setTimeout(() => {
+      if(document.querySelector("#response").innerHTML == ""){
+        history.back()
+      }
+    }, 15000); 
+}
+
+
+window.onload = resetTimer;
+window.onmousemove = resetTimer;
+window.onmousedown = resetTimer;
+window.ontouchstart = resetTimer;
+window.onclick = resetTimer;     
+window.onkeydown = resetTimer;

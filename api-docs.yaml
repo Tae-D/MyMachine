@@ -1,0 +1,2135 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/user/current:
+    get:
+      tags:
+      - user-endpoint
+      operationId: getUser
+      parameters: []
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - user-endpoint
+      operationId: updateUser
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/user/{id}:
+    get:
+      tags:
+      - user-endpoint
+      operationId: getUser_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - user-endpoint
+      operationId: updateUser_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - user-endpoint
+      operationId: deleteUser
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/shutdown:
+    put:
+      tags:
+      - system-endpoint
+      operationId: shutdown
+      parameters:
+      - name: isReboot
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/settings/sawdonationdisclaimer:
+    put:
+      tags:
+      - system-endpoint
+      operationId: setDonated
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/settings/i2c:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getI2C
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - system-endpoint
+      operationId: setI2C
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Request'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/settings/donated:
+    put:
+      tags:
+      - system-endpoint
+      operationId: setDonated_1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: boolean
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/settings/defaultfilter:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getDefaultFilter_1
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - system-endpoint
+      operationId: getDefaultFilter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detailed'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/settings/appearance:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getAppearance
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - system-endpoint
+      operationId: setAppearance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detailed'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/recipe/{id}:
+    get:
+      tags:
+      - recipe-endpoint
+      operationId: getRecipe
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: isIngredient
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - recipe-endpoint
+      operationId: updateRecipe
+      parameters:
+      - name: removeImage
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - recipe
+              type: object
+              properties:
+                recipe:
+                  $ref: '#/components/schemas/Create'
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - recipe-endpoint
+      operationId: deleteRecipe
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/{id}/runjob:
+    put:
+      tags:
+      - pump-endpoint
+      operationId: dispatchPumpAdvice
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PumpAdvice'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/{id}/pumpup:
+    put:
+      tags:
+      - pump-endpoint
+      operationId: pumpUp
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/{id}/pumpback:
+    put:
+      tags:
+      - pump-endpoint
+      operationId: pumpBack
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/stop:
+    put:
+      tags:
+      - pump-endpoint
+      operationId: stopPump
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/start:
+    put:
+      tags:
+      - pump-endpoint
+      operationId: startPump
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/settings/reversepumping:
+    get:
+      tags:
+      - pump-settings-endpoint
+      operationId: getReversePumpSettings
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - pump-settings-endpoint
+      operationId: setReversePumpSettings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/settings/powerlimit:
+    get:
+      tags:
+      - pump-settings-endpoint
+      operationId: getPowerLimit
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - pump-settings-endpoint
+      operationId: setPowerLimit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detailed'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/settings/loadcell:
+    get:
+      tags:
+      - pump-settings-endpoint
+      operationId: getLoadCell
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - pump-settings-endpoint
+      operationId: setLoadCell
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/settings/loadcell/calibratezero:
+    put:
+      tags:
+      - pump-settings-endpoint
+      operationId: calibrateLoadCellZero
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/settings/loadcell/calibratereference:
+    put:
+      tags:
+      - pump-settings-endpoint
+      operationId: calibrateLoadCellRefWeight
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/ingredient/{id}:
+    put:
+      tags:
+      - ingredient-endpoint
+      operationId: updateIngredient
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: removeImage
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - ingredient
+              type: object
+              properties:
+                ingredient:
+                  $ref: '#/components/schemas/Create'
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - ingredient-endpoint
+      operationId: deleteIngredient
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/ingredient/{id}/bar:
+    put:
+      tags:
+      - ingredient-endpoint
+      operationId: addToBar
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - ingredient-endpoint
+      operationId: removeFromBar
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/gpio/{id}:
+    get:
+      tags:
+      - gpio-endpoint
+      operationId: getGpioBoard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - gpio-endpoint
+      operationId: updateGpioBoard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - gpio-endpoint
+      operationId: deleteGpioBoard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/glass/{id}:
+    get:
+      tags:
+      - glass-endpoint
+      operationId: getGlass
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - glass-endpoint
+      operationId: updateGlass
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detailed'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - glass-endpoint
+      operationId: deleteGlass
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/eventaction/{id}:
+    get:
+      tags:
+      - event-action-endpoint
+      operationId: getAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - event-action-endpoint
+      operationId: updateAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - eventAction
+              type: object
+              properties:
+                eventAction:
+                  $ref: '#/components/schemas/Create'
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - event-action-endpoint
+      operationId: deleteAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/collection/{id}:
+    get:
+      tags:
+      - collection-endpoint
+      operationId: getCollection
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - collection-endpoint
+      operationId: updateCollection
+      parameters:
+      - name: removeImage
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - collection
+              type: object
+              properties:
+                collection:
+                  $ref: '#/components/schemas/Create'
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - collection-endpoint
+      operationId: deleteCollection
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/cocktail/{recipeId}:
+    put:
+      tags:
+      - cocktail-endpoint
+      operationId: orderCocktail
+      parameters:
+      - name: recipeId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: isIngredient
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/cocktail/{recipeId}/feasibility:
+    put:
+      tags:
+      - cocktail-endpoint
+      operationId: checkFeasibility
+      parameters:
+      - name: recipeId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: isIngredient
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/category/{id}:
+    get:
+      tags:
+      - category-endpoint
+      operationId: getCategory
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    put:
+      tags:
+      - category-endpoint
+      operationId: updateCategory
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - category-endpoint
+      operationId: deleteCategory
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/user/:
+    get:
+      tags:
+      - user-endpoint
+      operationId: getUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - user-endpoint
+      operationId: createUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/transfer/import:
+    post:
+      tags:
+      - transfer-endpoint
+      operationId: uploadImport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/transfer/import/{id}:
+    post:
+      tags:
+      - transfer-endpoint
+      operationId: confirmImport
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportConfirmRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/transfer/export:
+    post:
+      tags:
+      - transfer-endpoint
+      operationId: startExport
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/transfer/export/recipes:
+    post:
+      tags:
+      - transfer-endpoint
+      operationId: getRecipes
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/performupdate:
+    post:
+      tags:
+      - system-endpoint
+      operationId: performUpdate
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/recipe/:
+    get:
+      tags:
+      - recipe-endpoint
+      operationId: getRecipesByFilter
+      parameters:
+      - name: ownerId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: inCollection
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: fabricable
+        in: query
+        required: false
+        schema:
+          type: string
+          default: all
+      - name: containsIngredients
+        in: query
+        required: false
+        schema:
+          type: array
+          items:
+            type: integer
+            format: int64
+      - name: searchName
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: inCategory
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: orderBy
+        in: query
+        required: false
+        schema:
+          type: string
+          default: name
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - recipe-endpoint
+      operationId: createRecipe
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - recipe
+              type: object
+              properties:
+                recipe:
+                  $ref: '#/components/schemas/Create'
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/:
+    get:
+      tags:
+      - pump-endpoint
+      operationId: getAllPumps
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - pump-endpoint
+      operationId: createPump
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/ingredient/:
+    get:
+      tags:
+      - ingredient-endpoint
+      operationId: getIngredients
+      parameters:
+      - name: autocomplete
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: filterManualIngredients
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: filterAutomaticIngredients
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: filterIngredientGroups
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: groupChildrenGroupId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: inBar
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: onPump
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: inBarOrOnPump
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - ingredient-endpoint
+      operationId: createIngredient
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - ingredient
+              type: object
+              properties:
+                ingredient:
+                  $ref: '#/components/schemas/Create'
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/gpio/{id}/restart:
+    post:
+      tags:
+      - gpio-endpoint
+      operationId: restartBoard
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/gpio/:
+    get:
+      tags:
+      - gpio-endpoint
+      operationId: getGpioBoards
+      parameters:
+      - name: dType
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - gpio-endpoint
+      operationId: createGpioBoard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/glass/:
+    get:
+      tags:
+      - glass-endpoint
+      operationId: getAllGlasses
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - glass-endpoint
+      operationId: createGlass
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Detailed'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/eventaction/{id}/start:
+    post:
+      tags:
+      - event-action-endpoint
+      operationId: runAction
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/eventaction/:
+    get:
+      tags:
+      - event-action-endpoint
+      operationId: getActions
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - event-action-endpoint
+      operationId: createAction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              required:
+              - eventAction
+              type: object
+              properties:
+                eventAction:
+                  $ref: '#/components/schemas/Create'
+                file:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/collection/{id}/add:
+    post:
+      tags:
+      - collection-endpoint
+      operationId: addRecipeToCollection
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/collection/:
+    get:
+      tags:
+      - collection-endpoint
+      operationId: getCollections
+      parameters:
+      - name: ownerId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - collection-endpoint
+      operationId: createCollection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/cocktail/continueproduction:
+    post:
+      tags:
+      - cocktail-endpoint
+      operationId: continueCocktailProduction
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/category/:
+    get:
+      tags:
+      - category-endpoint
+      operationId: getAllCategories
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    post:
+      tags:
+      - category-endpoint
+      operationId: createCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/auth/login:
+    post:
+      tags:
+      - auth-endpoint
+      operationId: authenticateUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/{id}:
+    get:
+      tags:
+      - pump-endpoint
+      operationId: getPump
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    delete:
+      tags:
+      - pump-endpoint
+      operationId: deletePump
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+    patch:
+      tags:
+      - pump-endpoint
+      operationId: patchPump
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Create'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/version:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getVersion
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/settings/global:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getGlobalSettings
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/settings/appearance/language:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getLanguages
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/pythonlibraries:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getPythonLibraries
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/i2cprobe:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getI2CProbe
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/checkupdate:
+    get:
+      tags:
+      - system-endpoint
+      operationId: checkUpdate
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/system/audiodevices:
+    get:
+      tags:
+      - system-endpoint
+      operationId: getAudioDevices
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/recipe/{id}/image:
+    get:
+      tags:
+      - recipe-endpoint
+      operationId: getRecipeImage
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: isIngredient
+        in: query
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: width
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: -1
+      responses:
+        "200":
+          description: OK
+          content:
+            image/jpeg:
+              schema:
+                type: object
+  /api/recipe/ingredient:
+    get:
+      tags:
+      - recipe-endpoint
+      operationId: getIngredientRecipes
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/recipe/ingredient/{id}:
+    get:
+      tags:
+      - recipe-endpoint
+      operationId: getIngredientRecipe
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/settings/loadcell/read:
+    get:
+      tags:
+      - pump-settings-endpoint
+      operationId: readLoadCell
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/pump/jobmetrics/{id}:
+    get:
+      tags:
+      - pump-endpoint
+      operationId: getJobMetrics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/ingredient/{id}/image:
+    get:
+      tags:
+      - ingredient-endpoint
+      operationId: getRecipeImage_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            image/jpeg:
+              schema:
+                type: object
+  /api/ingredient/export:
+    get:
+      tags:
+      - ingredient-endpoint
+      operationId: getIngredientExport
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/gpio/{id}/pin:
+    get:
+      tags:
+      - gpio-endpoint
+      operationId: getGpioPins
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/gpio/status:
+    get:
+      tags:
+      - gpio-endpoint
+      operationId: getStatus
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/eventaction/executiongroup:
+    get:
+      tags:
+      - event-action-endpoint
+      operationId: getExecutionGroups
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/collection/{id}/image:
+    get:
+      tags:
+      - collection-endpoint
+      operationId: getRecipeImage_2
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            image/jpeg:
+              schema:
+                type: object
+  /api/auth/refreshToken:
+    get:
+      tags:
+      - auth-endpoint
+      operationId: authenticateUser_1
+      parameters:
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/eventaction/process/{id}:
+    delete:
+      tags:
+      - event-action-endpoint
+      operationId: killProcess
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/collection/{id}/{recipeId}:
+    delete:
+      tags:
+      - collection-endpoint
+      operationId: removeRecipeFromCollection
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: recipeId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/cocktail/:
+    delete:
+      tags:
+      - cocktail-endpoint
+      operationId: cancelCocktail
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+components:
+  schemas:
+    Create:
+      required:
+      - accountNonLocked
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          maxLength: 20
+          minLength: 3
+          type: string
+        password:
+          maxLength: 40
+          minLength: 6
+          type: string
+        adminLevel:
+          type: integer
+          format: int32
+        accountNonLocked:
+          type: boolean
+    UpdateUserRequest:
+      required:
+      - userDto
+      type: object
+      properties:
+        updatePassword:
+          type: boolean
+        userDto:
+          $ref: '#/components/schemas/Create'
+    Request:
+      type: object
+      properties:
+        enable:
+          type: boolean
+        sdaPin:
+          $ref: '#/components/schemas/Select'
+        sclPin:
+          $ref: '#/components/schemas/Select'
+    Select:
+      required:
+      - boardId
+      - nr
+      type: object
+      properties:
+        nr:
+          type: integer
+          format: int32
+        boardId:
+          type: integer
+          format: int64
+    Detailed:
+      type: object
+      properties:
+        enable:
+          type: boolean
+        filter:
+          $ref: '#/components/schemas/Filter'
+    Filter:
+      required:
+      - fabricable
+      type: object
+      properties:
+        fabricable:
+          type: string
+    PumpAdvice:
+      required:
+      - type
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - RUN
+          - PUMP_UP
+          - PUMP_DOWN
+          - PUMP_ML
+          - PUMP_TIME
+          - PUMP_STEPS
+        amount:
+          minimum: 1
+          type: integer
+          format: int64
+    ImportConfirmRequest:
+      type: object
+      properties:
+        importAllRecipes:
+          type: boolean
+        importRecipeIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        importAllCollections:
+          type: boolean
+        importCollectionIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        importAllGlasses:
+          type: boolean
+        importAllCategories:
+          type: boolean
+        duplicateMode:
+          type: string
+          enum:
+          - overwrite
+          - skip
+          - keep_both
+    ExportRequest:
+      type: object
+      properties:
+        exportAllRecipes:
+          type: boolean
+        exportRecipeIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        exportAllCollections:
+          type: boolean
+        exportCollectionIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+    LoginRequest:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        remember:
+          type: boolean

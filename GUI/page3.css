@@ -1,0 +1,120 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+
+footer{
+    position: fixed;
+    bottom: 0;
+    text-align: center;
+    background-color: white;
+    width: 100vw;
+    height: 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    text-align: center;
+    font-size: 3vw;
+}
+
+.grid > div {
+    border: 2px solid black;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    position: relative;
+}
+
+.grid > div.expand{
+    grid-column: span 3;
+}
+
+.grid {
+    position: absolute;
+    top: 5vw;
+    display: grid;
+    left: 5vw;
+    grid-template-columns: 30vw 30vw 30vw;
+    grid-auto-rows: 30vw;
+    padding-bottom: 6vw;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.grid > div.expand .invisible {
+    visibility: visible;
+}
+
+.grid > div > img {
+    border-radius: 15px;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 30vw;
+    height: auto;
+    max-height: 18vw;
+}
+
+.nazev {
+    font-family:sans-serif ;
+    text-align: left;
+    font-size: 5vw;
+    width: 30vw;
+}
+
+.popis {
+    font-family:sans-serif ;
+    text-align: left;
+    font-size: 2vw;
+    position: absolute;
+    top: 0;
+    left: 30vw;
+    padding: 5px;
+    width: 46vw;
+    text-align:justify;
+}
+
+.ingredience {
+    font-family:sans-serif ;
+    text-align: left;
+    font-size: 1vw;
+    position: absolute;
+    left: 30vw;
+    bottom: 0;
+    padding: 5px;
+    width: 46vw;
+    text-align:left;
+}
+
+.pripravit {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 30vw;
+    width: 10vw;
+    background-color: green;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+    font-size: 5vw;
+    border-radius: 15px;
+}
