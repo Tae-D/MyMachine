@@ -1,11 +1,10 @@
-import requests
 import time
-import json
 import os
 from dotenv import load_dotenv
 import argostranslate.package
 import argostranslate.translate
 from fluidcheck import *
+import chromadb
 
 load_dotenv()
 FROM_CODE = "cs"
@@ -87,72 +86,67 @@ def get_answer(job):
         time.sleep(2)
         attempt += 1
         print(r.json().get("wait_time"))
-        if attempt > 30 and r.json().get("wait_time")==0 or r.json().get("wait_time") > 60:
+        if attempt > 30 and r.json().get("wait_time")==0:
 
             return False
 
 
 def main(prompt: str, ml: int):
     attempt_generate = 0
-
-    start_time = time.time()
-    recipes=feasibility_list(ml)
-    recipes_sorted = [[i["name"], i["description"], [g["name"] for g in i["ingredients"]]] for i in recipes]
-    recipes_list=[[i["name"], i["id"]] for i in recipes]
+    id=0
     prompt=translate_cs_to_en(prompt)
+    client = chromadb.PersistentClient(path="./vectorclient")
+    collection = client.get_collection(name="vectordata")
+    result=collection.query(query_texts=[prompt],n_results=10)
+    print(result)
+    for i in result["ids"][0]:
+        if True:  #feasibility(i,ml): #this only for testing
+            id=i
+            drinkdocument=result["documents"][0][result["ids"][0].index(i)]
+            break
+    if id==0:
+        return {"id":0,"name":"","humanResponse":"AI nemůže najít nápoj pro tebe. Zkus jiný prompt"} #if AI cant find recipe, it will return nothing
+
     print(f"\n{prompt}\n")
     while True:
         if attempt_generate > 10:  # if prompt is not that hard, it is usually enough.
             print("too many attempts, try different prompt")
-            end_time = time.time()
-            print(f"Time taken: {round(end_time - start_time)}s")
-            exit()
+            return {"id": 0, "name": "", "humanResponse": "AI nemůže najít nápoj pro tebe. Zkus jiný prompt"}
 
-        system_instruction = (
-            f"You are a drink machine API. Respond ONLY in valid dictionary. Take one drink from {recipes_sorted}. "
-            "The dictionary must contain four keys: 'reply', 'reasoningSummary', 'humanResponse'."
-            "humanResponse should be a comment for drink, that is chosen"
 
-        )
-        example = (
-            "Example Input: 'I am thirsty'\n"
-            "Example Output: {\"reply\": \"Rockshandy\", \"reasoningSummary\": \"User needs something against thirst. I will give them Rockshady because it contains Lemon-Lime Soda, which is great again thirst and it is refreshing\", \"humanResponse\": \"Here is your Rockshandy, it contains lemon soda, that will be great against your thirst\"}"
-        )
+        finalprompt  = f"""
+        ### SYSTEM INSTRUCTIONS ###
+        You are the AI soul of the drink machine. You are witty, 
+        efficient, and slightly boastful about your precision. Your goal is 
+        to provide a "Serving Remark" as the drink is poured.
+        
+        CONSTRAINTS:
+        - Max 25 words.
+        - End with a short, punchy sign-off.
+        - Mention one key ingredient.
+        - Return only raw text that will be given to user
+        
+        ### EXAMPLE OF EXPECTED BEHAVIOR ###
+        User Request: "I need something to wake me up for my night shift."
+        Selected Recipe: "Turbo Espresso Martini"
+        AI Response: "Okay, I have a perfect recipe for you. It is Turbo Espresso Martini. It contains Coffe that will help you wake up. Enjoy!"
+        
+        ### CURRENT TASK ###
+        User Request: "{prompt}"
+        Selected Recipe: "{drinkdocument}"
+        
+        AI Response:
 
-        finalprompt = f"{system_instruction}\n\n{example}\n\nInput: {prompt}\nOutput:"
+        """# TODO: add some normal prompt engineering
         print(len(finalprompt))
         job_id = get_job_id(finalprompt)
         absoluteresponse = get_answer(job_id)
         if absoluteresponse == False:
+            print("reset")
             requests.delete(f"{BASEURL}/generate/text/status/{job_id}")
             continue
-        start = absoluteresponse.find("{")
-        end = absoluteresponse.find("}")
-
-        if start == -1 or end == -1:
-            attempt_generate += 1
-            print(f"restart {attempt_generate}")
-            continue
-        try:
-            res = json.loads(absoluteresponse[start:end+1])
-        except json.JSONDecodeError:
-            attempt_generate += 1
-            print(f"restart {attempt_generate}")
-            continue
-
-        if res.get("reply") in [i[0] for i in recipes_list]:
-            end_time = time.time()
-            print(f"Time taken: {round(end_time-start_time)}s")
-            for item, id in recipes_list:
-                if res.get("reply") == item:
-                    res["id"]=id
-            res["humanResponse"] = translate_en_to_cs(res.get("humanResponse"))
-            return res
         else:
-            attempt_generate += 1
-            print(f"restart {attempt_generate}")
-            requests.delete(f"{BASEURL}/generate/text/status/{job_id}")
-            continue
+            return {"id":id, "name":result["metadatas"][0][result["ids"][0].index(id)]["name"],"humanResponse":translate_en_to_cs(absoluteresponse)}
 
 
 if __name__ == '__main__':
@@ -169,5 +163,5 @@ if __name__ == '__main__':
     username = "Admin"
     password = "123456"
 
-    promptmain = ("chci něco s mátou")
+    promptmain = ("ahoj, měl jsem těžkou písemku. Děj mi něco na uklidnění")
     print(main(promptmain, 50))

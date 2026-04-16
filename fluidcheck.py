@@ -37,6 +37,7 @@ def sync():
         list=list.json()
         fluid={}
         for i in list:
+            print(i)
             fluid[i["currentIngredient"]["name"]]=i["fillingLevelInMl"]
         with open("data.json", "w") as f:
             json.dump(fluid, f, indent=4)
@@ -51,6 +52,7 @@ def feasibility(recipeid: int,ml):
     headersrecipe = {"Authorization": f"Bearer {token.json()["accessToken"]}"}
     recipe=requests.put(f"{domain}/api/cocktail/{recipeid}/feasibility", headers=headersrecipe,json={"amountOrderedInMl":ml,"customisations":{"boost":100,"additionalIngredients":[]},"ingredientGroupReplacements":[]})
     if recipe.status_code != 200:
+        print(recipe.status_code)
         print("could not check feasibility")
         return False
     if recipe.json().get("feasible", False):
@@ -120,7 +122,7 @@ def fill(pumpid, ml):
 
 
 if __name__ == "__main__":
-    match "local":
+    match "demo":
         case "local":
             domain = "http://localhost:8080"
         case "demo":
@@ -129,7 +131,7 @@ if __name__ == "__main__":
     username = "Admin"
     password = "123456"
     #check()
-    #call(167,500)
+    call(167,200)
     #feasibility(167)
-    #feasibility_list(10)
-    fill(1,420)
+    #print(feasibility_list(10))
+    #fill(5 ,500)
