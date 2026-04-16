@@ -1,5 +1,6 @@
 npm run start &
-cd ./CocktailPi/backend
+cd CocktailPi/backend
 mvn spring-boot:run &
-sleep 5
-chromium http://localhost:3000 --kiosk  
+cd ../frontend
+npm run dev &
+DISPLAY=:0 chromium http://localhost:3000 --kiosk --password-store=basic
