@@ -11,7 +11,7 @@ def recipelist(domain):
     if recipes.status_code == 200:
         recipes = recipes.json()
         for i in range(recipes.get("totalPages")):
-            pageurl = f"{domain}/api/recipe/?page={i}"  # works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
+            pageurl = f"{domain}/api/recipe/?page={i}&inCategory=1"  # works only with recipes from demo. If you want to add your own recipes, delete "&inCategory=1"
             pagerecipes = requests.get(pageurl, headers=headersrecipe)
             pagerecipes = pagerecipes.json()
             print(f"downloading recipes {i + 1}/{recipes.get("totalPages")}")
