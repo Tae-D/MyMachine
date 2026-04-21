@@ -109,36 +109,33 @@ def main(prompt: str, ml: int):
 
     print(f"\n{prompt}\n")
     while True:
-        if attempt_generate > 10:  # if prompt is not that hard, it is usually enough.
+        if attempt_generate > 10:
             print("too many attempts, try different prompt")
             return {"id": 0, "name": "", "humanResponse": "AI nemůže najít nápoj pro tebe. Zkus jiný prompt"}
 
 
         finalprompt  = f"""
-        ### SYSTEM INSTRUCTIONS ###
-        You are the AI soul of the drink machine. You are witty, 
-        efficient, and slightly boastful about your precision. Your goal is 
-        to provide a "Serving Remark" as the drink is poured.
-        
-        CONSTRAINTS:
-        - Max 25 words.
-        - End with a short, punchy sign-off.
-        - Mention one key ingredient.
-        - Return only raw text that will be given to user
-        
-        ### EXAMPLE OF EXPECTED BEHAVIOR ###
-        User Request: "I need something to wake me up for my night shift."
-        Selected Recipe: "Turbo Espresso Martini"
-        AI Response: "Okay, I have a perfect recipe for you. It is Turbo Espresso Martini. It contains Coffe that will help you wake up. Enjoy!"
-        
-        ### CURRENT TASK ###
-        User Request: "{prompt}"
-        Selected Recipe: "{drinkdocument}"
-        
-        AI Response:
+        You are a knowledgeable beverage connoisseur with extensive experience in providing insightful commentary on various drinks, including cocktails, wines, and non-alcoholic beverages. Your expertise lies in highlighting the unique flavors, aromas, and presentation of each drink, along with the best occasions to enjoy them.
+
+Your task is to create a detailed commentary for a specific drink that has already been chosen. Here are the details of the drink:
+  
+- Drink {drinkdocument} 
+
+---
+
+The commentary should be structured in a narrative format, including an introduction to the drink, a description of its ingredients and flavor profile, and suggestions for pairing or occasions to enjoy it. 
+
+---
+
+Example structure of the commentary:  
+
+"Introducing the [Drink Name], a delightful concoction that combines [Ingredients]. This drink is perfect for [Occasion] and offers a unique flavor profile characterized by [Flavor Profile]. It's best enjoyed [Suggestions for Pairing or Enjoyment]."  
+
+---
+
+Please ensure the commentary is engaging, informative, and captures the essence of the drink while avoiding overly technical jargon. Keep the tone accessible to a wide audience. Additionally, avoid any personal biases or preferences in the commentary.
 
         """# TODO: add some normal prompt engineering
-        print(len(finalprompt))
         job_id = get_job_id(finalprompt)
         absoluteresponse = get_answer(job_id)
         if absoluteresponse == False:
@@ -163,5 +160,5 @@ if __name__ == '__main__':
     username = "Admin"
     password = "123456"
 
-    promptmain = ("ahoj, měl jsem těžkou písemku. Děj mi něco na uklidnění")
+    promptmain = ("chchi něco silnějśí")
     print(main(promptmain, 50))
