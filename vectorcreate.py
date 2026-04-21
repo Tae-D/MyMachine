@@ -27,7 +27,8 @@ def recipelist(domain):
 
 def createvector(recipes):
     client=chromadb.PersistentClient(path="./vectorclient")
-    collection=client.get_or_create_collection(name="vectordata")
+    client.delete_collection(name="vectordata")
+    collection=client.create_collection(name="vectordata")
     ids=[]
     documents=[]
     metadatas=[]
