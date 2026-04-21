@@ -86,8 +86,7 @@ def get_answer(job):
         time.sleep(2)
         attempt += 1
         print(r.json().get("wait_time"))
-        if attempt > 30 and r.json().get("wait_time")==0:
-
+        if attempt > 60 :
             return False
 
 
@@ -135,7 +134,8 @@ Example structure of the commentary:
 
 Please ensure the commentary is engaging, informative, and captures the essence of the drink while avoiding overly technical jargon. Keep the tone accessible to a wide audience. Additionally, avoid any personal biases or preferences in the commentary.
 
-        """# TODO: add some normal prompt engineering
+AI response:
+        """
         job_id = get_job_id(finalprompt)
         absoluteresponse = get_answer(job_id)
         if absoluteresponse == False:
@@ -160,5 +160,5 @@ if __name__ == '__main__':
     username = "Admin"
     password = "123456"
 
-    promptmain = ("chchi něco silnějśí")
+    promptmain = (input("prompt: "))
     print(main(promptmain, 50))
