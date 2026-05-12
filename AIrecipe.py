@@ -58,7 +58,7 @@ def translate_en_to_cs(text):
 
 def get_job_id(prompt: str):
     urlai = f"{BASEURL}/generate/text/async"
-    payload = {"n": 1, "params": {"max_length": 150}, "prompt": prompt}
+    payload = {"n": 1, "params": {"max_length": 50}, "prompt": prompt}
     headers = {}
     if API_KEY:
         headers["apikey"] = API_KEY
@@ -138,6 +138,7 @@ AI response:
         """
         job_id = get_job_id(finalprompt)
         absoluteresponse = get_answer(job_id)
+        print(finalprompt)
         if absoluteresponse == False:
             print("reset")
             requests.delete(f"{BASEURL}/generate/text/status/{job_id}")
