@@ -3,12 +3,13 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const path = require("path");
-const nodecallspython = require("node-calls-python")
+const { execFile } = require('child_process');
+const util = require('util');
+const execFileAsync = util.promisify(execFile);
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-const py = nodecallspython.interpreter;
 
 // Serve static files
 app.use(express.static(path.join(__dirname, "GUI")));
@@ -25,9 +26,31 @@ io.on("connection", (socket) => {
   // Handle new messages
   socket.on("query", async (msg) => {
     console.log("Message received:", msg);
-    let module = await py.import("./AIrecipeTEST.py");
-    let result = await py.call(module, "main");
-    io.emit("response", result);
+    
+    try {
+      // Asynchronní spuštění skriptu - nezablokuje server pro ostatní uživatele
+      const { stdout } = await execFileAsync('uv', ['run', '--active', 'AIrecipe.py', msg.text], {
+        encoding: 'buffer'
+      });
+
+      let result_raw = stdout.toString('utf-8');;
+
+      // Odříznutí případných varování od nástroje 'uv'
+      const jsonStart = result_raw.indexOf('{');
+      if (jsonStart !== -1) {
+        result_raw = result_raw.substring(jsonStart);
+      }
+
+      // Naparsování čistého JSONu
+      const result = JSON.parse(result_raw);
+      
+      console.log("odpoved: ", result);
+      io.emit("response", result);
+
+    } catch (error) {
+      console.error("Chyba při spouštění Python skriptu:", error);
+      socket.emit("error", { message: "Nepodařilo se vygenerovat recept." });
+    }
   });
 
   // Handle disconnection
@@ -35,6 +58,7 @@ io.on("connection", (socket) => {
     console.log("A user disconnected");
   });
 });
+
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, "127.0.0.1", () => {

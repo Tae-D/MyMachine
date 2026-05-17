@@ -11,7 +11,8 @@ form.addEventListener("submit", async (e) => {
 });
 
 socket.on("response", (msg) => {
-  data = JSON.parse(msg);
+  console.log(msg)
+  let data = msg
 
   document.getElementById("response").innerHTML =
     "Odpověď: " + data.humanResponse + "<br>" + "Nápoj : " + data.reply;
@@ -28,7 +29,7 @@ function resetTimer() {
     clearTimeout(timeout);
     
     timeout = setTimeout(() => {
-      if(document.querySelector("#response").innerHTML == ""){
+      if(document.querySelector("#response").innerHTML == "" && document.querySelector(".loading").style.visibility == "hidden"){
         history.back()
       }
     }, 15000); 

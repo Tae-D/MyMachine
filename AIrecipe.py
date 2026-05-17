@@ -5,6 +5,8 @@ import argostranslate.package
 import argostranslate.translate
 from fluidcheck import *
 import chromadb
+import sys
+import json
 
 load_dotenv()
 FROM_CODE = "cs"
@@ -20,7 +22,7 @@ def install_model(source, target):
         # Check if already installed
         installed = argostranslate.package.get_installed_packages()
         if any(pkg.from_code == source and pkg.to_code == target for pkg in installed):
-            print(f"Model {source} -> {target} is already installed.")
+            #print(f"Model {source} -> {target} is already installed.")
             return
 
         # Update index and find package
@@ -30,14 +32,16 @@ def install_model(source, target):
         package = next((p for p in available if p.from_code == source and p.to_code == target), None)
 
         if package:
-            print(f"Downloading {source} -> {target} model...")
+            #print(f"Downloading {source} -> {target} model...")
             argostranslate.package.install_from_path(package.download())
-            print("Done.")
+            #print("Done.")
         else:
-            print(f"Model {source} -> {target} not found.")
+            pass
+            #print(f"Model {source} -> {target} not found.")
 
     except Exception as e:
-        print(f"Error installing {source}-{target}: {e}")
+        pass
+        #print(f"Error installing {source}-{target}: {e}")
 
 
 def init_translation():
@@ -65,8 +69,8 @@ def get_job_id(prompt: str):
     response = requests.post(urlai, json=payload, headers=headers)
 
     if response.status_code != 200 and response.status_code != 202:
-        print(
-            f"error code: {response.status_code}, error message: {response.text}")
+        #print(
+        #    f"error code: {response.status_code}, error message: {response.text}")
         exit(response.status_code)
     job_id = response.json().get("id")
     return job_id
@@ -78,14 +82,14 @@ def get_answer(job):
     while True:
         r = requests.get(status_url)
         if r.status_code != 200 and r.status_code != 202:
-            print(f"error code: {r.status_code}, error message: {r.text}")
-
+            #print(f"error code: {r.status_code}, error message: {r.text}")
+            pass
         if r.json().get("finished"):
             absoluteresponse = r.json()["generations"][0]["text"]
             return absoluteresponse
         time.sleep(2)
         attempt += 1
-        print(r.json().get("wait_time"))
+        #print(r.json().get("wait_time"))
         if attempt > 60 :
             return False
 
@@ -97,7 +101,7 @@ def main(prompt: str, ml: int):
     client = chromadb.PersistentClient(path="./vectorclient")
     collection = client.get_collection(name="vectordata")
     result=collection.query(query_texts=[prompt],n_results=10)
-    print(result)
+    #print(result)
     for i in result["ids"][0]:
         if True:  #feasibility(i,ml): #this only for testing
             id=i
@@ -106,10 +110,10 @@ def main(prompt: str, ml: int):
     if id==0:
         return {"id":0,"name":"","humanResponse":"AI nemůže najít nápoj pro tebe. Zkus jiný prompt"} #if AI cant find recipe, it will return nothing
 
-    print(f"\n{prompt}\n")
+    #print(f"\n{prompt}\n")
     while True:
         if attempt_generate > 10:
-            print("too many attempts, try different prompt")
+            #print("too many attempts, try different prompt")
             return {"id": 0, "name": "", "humanResponse": "AI nemůže najít nápoj pro tebe. Zkus jiný prompt"}
 
 
@@ -138,9 +142,9 @@ AI response:
         """
         job_id = get_job_id(finalprompt)
         absoluteresponse = get_answer(job_id)
-        print(finalprompt)
+        #print(finalprompt)
         if absoluteresponse == False:
-            print("reset")
+            #print("reset")
             requests.delete(f"{BASEURL}/generate/text/status/{job_id}")
             continue
         else:
@@ -157,9 +161,13 @@ if __name__ == '__main__':
         case "demo":
             domain = "https://demo.cocktailpi.org"
 
-    print(domain)
+    #print(domain)
     username = "Admin"
     password = "123456"
 
-    promptmain = (input("prompt: "))
-    print(main(promptmain, 50))
+    #promptmain = (input("prompt: "))
+    promptmain = sys.argv[1]
+    sys.stdout.flush()
+    json.dump(main(promptmain, 50), sys.stdout, ensure_ascii=True, indent=2)
+
+
