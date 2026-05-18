@@ -1,5 +1,5 @@
-const loginUrl = "http://localhost:8080/api/auth/login";
-const dataUrl = "http://localhost:8080/api/recipe/";
+const loginUrl = "http://localhost/api/auth/login";
+const dataUrl = "http://localhost/api/recipe/";
 
 const loginXhr = new XMLHttpRequest();
 loginXhr.open("POST", loginUrl, true);
@@ -33,7 +33,7 @@ function sendAuthenticatedRequest(token) {
                 document.querySelector(".grid").innerHTML += `
             <div onclick="if(event.target.tagName!='BUTTON'){this.classList.toggle('expand');}" class="pokus">
 
-                <img src="http://localhost:8080/api/recipe/${drink.id}/image" alt="obrázek k receptu ${drink.name}" class="visible">
+                <img src="http://localhost/api/recipe/${drink.id}/image" alt="obrázek k receptu ${drink.name}" class="visible">
                 <div class="visible nazev">${drink.name}</div>
 
                 <div class="invisible popis">${drink.description}</div>
@@ -60,8 +60,8 @@ function sendAuthenticatedRequest(token) {
 
 
 function makeCoctail(id) {
-    const loginUrl = "http://localhost:8080/api/auth/login";
-    const baseUrl = `http://localhost:8080/api/cocktail/${id}`;
+    const loginUrl = "http://localhost/api/auth/login";
+    const baseUrl = `http://localhost/api/cocktail/${id}`;
 
     const loginXhr = new XMLHttpRequest();
     loginXhr.open("POST", loginUrl, true);
