@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1280, height=800, initial-scale=1.0, user-scalable=no">
+    <title>Výběr nápojů - MyMachine</title>
+    <link rel="stylesheet" href="page3.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Zpět
+        </button>
+        <h1>Předpřipravené nápoje</h1>
+        <div class="header-spacer"></div> <!-- Pro vycentrování nadpisu -->
+    </header>
+
+    <main>
+        <div class="drinks-grid">
+            <!-- Drink Card 1 -->
+            <div class="drink-card">
+                <div class="drink-image-placeholder"><span class="emoji-badge">🍹</span></div>
+                <div class="drink-content">
+                    <h2 class="drink-title">Jablečný sen</h2>
+                    <p class="drink-desc">Osvěžující kombinace jablečného džusu a jemné perlivé vody s kapkou citronu.</p>
+                    <div class="drink-ingredients">
+                        <span class="ingredient">Jablečný džus</span>
+                        <span class="ingredient">Citronová šťáva</span>
+                        <span class="ingredient">Voda</span>
+                    </div>
+                </div>
+                <button class="prepare-btn">Připravit</button>
+            </div>
+
+            <!-- Drink Card 2 -->
+            <div class="drink-card">
+                <div class="drink-image-placeholder"><span class="emoji-badge">🍒</span></div>
+                <div class="drink-content">
+                    <h2 class="drink-title">Cherry Bomb</h2>
+                    <p class="drink-desc">Sladká a výrazná chuť třešní doplněná trochou grenadiny.</p>
+                    <div class="drink-ingredients">
+                        <span class="ingredient">Třešňový džus</span>
+                        <span class="ingredient">Grenadina</span>
+                    </div>
+                </div>
+                <button class="prepare-btn">Připravit</button>
+            </div>
+
+            <!-- Drink Card 3 -->
+            <div class="drink-card">
+                <div class="drink-image-placeholder"><span class="emoji-badge">🍋</span></div>
+                <div class="drink-content">
+                    <h2 class="drink-title">Citronáda</h2>
+                    <p class="drink-desc">Klasická a kyselá, perfektní pro rychlé osvěžení během přestávky.</p>
+                    <div class="drink-ingredients">
+                        <span class="ingredient">Citronová šťáva</span>
+                        <span class="ingredient">Cukrový sirup</span>
+                        <span class="ingredient">Voda</span>
+                    </div>
+                </div>
+                <button class="prepare-btn">Připravit</button>
+            </div>
+
+            <!-- Drink Card 4 -->
+            <div class="drink-card">
+                <div class="drink-image-placeholder"><span class="emoji-badge">🍑</span></div>
+                <div class="drink-content">
+                    <h2 class="drink-title">Meruňkový chill</h2>
+                    <p class="drink-desc">Hustý meruňkový džus, který zasytí a potěší svou plnou chutí.</p>
+                    <div class="drink-ingredients">
+                        <span class="ingredient">Meruňkový džus</span>
+                        <span class="ingredient">Voda</span>
+                    </div>
+                </div>
+                <button class="prepare-btn">Připravit</button>
+            </div>
+            
+            <!-- Drink Card 5 -->
+            <div class="drink-card">
+                <div class="drink-image-placeholder"><span class="emoji-badge">🧊</span></div>
+                <div class="drink-content">
+                    <h2 class="drink-title">Čistá Voda</h2>
+                    <p class="drink-desc">Prostě jen čistá, osvěžující voda na zahnání žízně.</p>
+                    <div class="drink-ingredients">
+                        <span class="ingredient">Voda</span>
+                    </div>
+                </div>
+                <button class="prepare-btn">Připravit</button>
+            </div>
+
+            <!-- Drink Card 6 -->
+            <div class="drink-card">
+                <div class="drink-image-placeholder"><span class="emoji-badge">🍎</span></div>
+                <div class="drink-content">
+                    <h2 class="drink-title">Jablko & Meruňka</h2>
+                    <p class="drink-desc">Sladká harmonie dvou oblíbených ovocných džusů.</p>
+                    <div class="drink-ingredients">
+                        <span class="ingredient">Jablečný džus</span>
+                        <span class="ingredient">Meruňkový džus</span>
+                    </div>
+                </div>
+                <button class="prepare-btn">Připravit</button>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <img src="krenka.png" alt="Gymnázium Křenová" class="logo logo-krenka">
+        <span class="footer-sep">·</span>
+        <span class="footer-label">Projekt MyMachine</span>
+        <span class="footer-sep">·</span>
+        <img src="kuldovka.jpg" alt="ZŠ" class="logo logo-zs">
+    </footer>
+
+</body>
+</html>

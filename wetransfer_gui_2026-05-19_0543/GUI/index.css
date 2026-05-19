@@ -1,0 +1,180 @@
+/* ============================================
+   MyMachine – Homepage
+   Target: 1280 × 800  ·  Waveshare 8" IPS
+   ============================================ */
+
+:root {
+    --bg: #f6f6f4;
+    --surface: #ffffff;
+    --border: #767672;
+    --text: #1a1a1a;
+    --text-secondary: #6b6b6b;
+    --text-muted: #9a9a9a;
+    --radius: 16px;
+    --font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* --- Reset --- */
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1, h2, h3, p, .greeting {
+    text-wrap: balance;
+}
+
+/* --- Base --- */
+html, body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+/* --- Layout --- */
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10vw;
+    gap: 56px;
+}
+
+/* --- Greeting --- */
+.hero {
+    text-align: center;
+}
+
+.greeting {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+}
+
+/* --- Choice cards --- */
+.choices {
+    display: flex;
+    gap: 24px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.choice {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 40px 32px;
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.choice:hover {
+    border-color: #8c8c88;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.choice:active {
+    transform: scale(0.98);
+    transition-duration: 0.08s;
+}
+
+/* Emoji */
+.choice-emoji {
+    font-size: 48px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* Text */
+.choice-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.choice-text h2 {
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    margin-bottom: 4px;
+}
+
+.choice-text p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+/* Arrow */
+.choice-arrow {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.choice:hover .choice-arrow {
+    transform: translateX(3px);
+    color: var(--text-secondary);
+}
+
+/* --- Footer --- */
+footer {
+    height: 128px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+}
+
+.logo {
+    height: 54px;
+    width: auto;
+    opacity: 0.5;
+    object-fit: contain;
+    border-radius: 3px;
+}
+
+.logo-zs {
+    height: 120px;
+}
+
+.logo-krenka {
+    height: 38px;
+}
+
+.footer-sep {
+    color: var(--text-muted);
+    font-size: 24px;
+}
+
+.footer-label {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.2px;
+}
